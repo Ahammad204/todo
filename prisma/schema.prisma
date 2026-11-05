@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  email      String     @unique
+  name       String
+  createdAt  DateTime   @default(now())
+  tasks      Task[]
+  categories Category[]
+}
+
+model Category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  color     String   @default("#FACC15")
+  icon      String   @default("folder")
+  createdAt DateTime @default(now())
+  tasks     Task[]
+
+  @@index([userId])
+}
+
+model Task {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String    @db.ObjectId
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?
+  dueDate           String?
+  dueTime           String?
+  priority          String    @default("MEDIUM")
+  status            String    @default("TODO")
+  categoryId        String?   @db.ObjectId
+  category          Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  estimatedDuration Int?
+  notes             String?
+  recurrence        String    @default("NONE")
+  sortOrder         Int       @default(0)
+  completedAt       DateTime?
+  archivedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  subtasks          Subtask[]
+  reminders         Reminder[]
+
+  @@index([userId, dueDate])
+  @@index([userId, status])
+}
+
+model Subtask {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  taskId    String   @db.ObjectId
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+}
+
+model Reminder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  taskId    String   @db.ObjectId
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  remindAt  DateTime
+  isSent    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+}

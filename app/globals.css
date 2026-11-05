@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0a0b;
+  --panel: #121214;
+  --panel2: #1a1a1d;
+  --border: #26262b;
+  --text: #fafaf9;
+  --muted: #a1a1aa;
+  --accent: #facc15;
+  color-scheme: dark;
+}
+.light {
+  --bg: #f6f6f4;
+  --panel: #ffffff;
+  --panel2: #efefec;
+  --border: #e2e2de;
+  --text: #171717;
+  --muted: #5d5d64;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-base: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-mute: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+input, select, textarea { outline: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent) !important; }
+
+@keyframes taskdone {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.015); }
+  100% { transform: scale(1); opacity: 0.75; }
+}
+.task-just-done { animation: taskdone 0.45s ease; }
+
+@keyframes toast-in {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.toast-in { animation: toast-in 0.2s ease; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-in { animation: fade-in 0.18s ease; }
